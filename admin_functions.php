@@ -50,9 +50,10 @@ function deleteUser($id) {
         
         $db->commit();
         return ['success' => true, 'message' => 'Пользователь успешно удален!'];
-    } catch (PDOException $e) {
+   } catch (PDOException $e) {
         $db->rollBack();
-        return ['success' => false, 'message' => 'Ошибка удаления: ' . $e->getMessage()];
+        error_log('Delete user error (ID: ' . $id . '): ' . $e->getMessage());
+        return ['success' => false, 'message' => 'Ошибка при удалении пользователя. Подробности в логе.'];
     }
 }
 
@@ -82,8 +83,9 @@ function updateUser($id, $data) {
         }
         
         return ['success' => true, 'message' => 'Данные пользователя успешно обновлены!'];
-    } catch (PDOException $e) {
-        return ['success' => false, 'message' => 'Ошибка обновления: ' . $e->getMessage()];
+   } catch (PDOException $e) {
+        error_log('Update user error (ID: ' . $id . '): ' . $e->getMessage());
+        return ['success' => false, 'message' => 'Ошибка при обновлении данных пользователя. Подробности в логе.'];
     }
 }
 ?>
