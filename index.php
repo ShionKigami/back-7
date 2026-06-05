@@ -211,9 +211,15 @@ else {
             exit();
 
         } else {
-            $login = 'user_' . rand(1000, 9999) . uniqid();
-            $pass = substr(md5(uniqid(rand(), true)), 0, 8);
-            $pass_hash = md5($pass);
+            $login = 'user_' . bin2hex(random_bytes(8));
+            
+            $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!@#$%^&*()';
+            $pass = '';
+            for ($i = 0; $i < 12; $i++) {
+                $pass .= $characters[random_int(0, strlen($characters) - 1)];
+            }
+            
+            $pass_hash = password_hash($pass, PASSWORD_DEFAULT);
 
             $stmt = $db->prepare("INSERT INTO users (name, phone, email, birthdate, sex, biography, login, pass_hash) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
             $stmt->execute([
