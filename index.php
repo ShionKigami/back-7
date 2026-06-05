@@ -244,13 +244,15 @@ else {
             exit();
         }
 
-    } catch (PDOException $e) {
-        $db->rollBack();
-        die('Ошибка базы данных: ' . $e->getMessage());
-    } catch (Exception $e) {
-        $db->rollBack();
-        die('Ошибка: ' . $e->getMessage());
-    }
+   } catch (PDOException $e) {
+    $db->rollBack();
+    error_log('Database error in form processing: ' . $e->getMessage());
+    die('Произошла ошибка при сохранении данных. Пожалуйста, попробуйте позже.');
+} catch (Exception $e) {
+    $db->rollBack();
+    error_log('General error in form processing: ' . $e->getMessage());
+    die('Произошла непредвиденная ошибка. Администратор уже уведомлён.');
+}
 }
 
 function getErrorMessage($field) {
