@@ -12,13 +12,25 @@ define('DB_HOST', 'localhost');
 function getDB() {
     static $db = null;
     if ($db === null) {
+        ini_set('display_errors', 0);
+        ini_set('display_startup_errors', 0);
+        error_reporting(E_ALL);
+        
+        ini_set('log_errors', 1);
+        ini_set('error_log', __DIR__ . '/logs/php_errors.log');
+        
+        if (!is_dir(__DIR__ . '/logs')) {
+            mkdir(__DIR__ . '/logs', 0755);
+        }
+        
         try {
             $db = new PDO('mysql:host=' . DB_HOST . ';dbname=' . DB_NAME, DB_USER, DB_PASS, [
                 PDO::ATTR_PERSISTENT => true,
                 PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
             ]);
         } catch (PDOException $e) {
-            die('Ошибка подключения к базе данных: ' . $e->getMessage());
+            error_log('Database connection error: ' . $e->getMessage());
+            die('Технические работы. Пожалуйста, попробуйте позже.');
         }
     }
     return $db;
